@@ -72,7 +72,7 @@ download_and_install_env() {
     # Name your first "bootstrap" environment:
     INITIAL_ENV="env"
     # Options for your first environment:
-    ENV_OPTS="--distribute"
+    ENV_OPTS="--allow-unverified  --distribute"
 
     # Only supporting 2.7 right now.
     python_command=$(get_and_check_python_version)
