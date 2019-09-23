@@ -220,6 +220,7 @@ setup_bashhub_files() {
     download_and_install_env
 
     # Grab the code from master off github.
+    echo ${github_branch}
     curl -sL https://github.com/falcucci/bashhub-client/archive/${github_branch}.tar.gz -o client.tar.gz
     tar -xvf client.tar.gz
     cd bashhub-client*
