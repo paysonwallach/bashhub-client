@@ -43,6 +43,8 @@ zshprofile=~/.zshrc
 # to pull from.
 github_branch=${1:-'1.2.0'}
 
+echo "this is the github_branch: " ${github_branch}
+
 install_bashhub() {
     check_dependencies
     check_already_installed
