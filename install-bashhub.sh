@@ -68,7 +68,7 @@ get_and_check_python_version() {
 
 download_and_install_env() {
     # Select current version of virtualenv:
-    VERSION=1.9.1
+    VERSION=16.7.5 
     # Name your first "bootstrap" environment:
     INITIAL_ENV="env"
     # Options for your first environment:
