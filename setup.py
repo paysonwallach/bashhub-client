@@ -9,7 +9,7 @@ tests_require = ['pytest>=3.3.1']
 setup(name='bashhub',
       version='__version__',
       description='Bashhub.com python client',
-      url='https://github.com/rcaloras/bashhub-client',
+      url='https://github.com/falcucci/bashhub-client',
       author='Ryan Caloras',
       author_email='ryan@bashhub.com',
       license='Apache',
