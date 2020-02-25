@@ -77,7 +77,7 @@ get_and_check_python_version() {
 
 download_and_install_env() {
     # Select current version of virtualenv:
-    VERSION=16.7.5 
+    VERSION=16.7.5
     # Name your first "bootstrap" environment:
     INITIAL_ENV="env"
     # Options for your first environment:
@@ -134,8 +134,8 @@ check_already_installed() {
 
 install_hooks_for_zsh() {
     # If we're using zsh, install our zsh hooks
-    if [ ! -e ~/.zshrc ]; then
-        die "No zshfile (.zshrc could be found)" 1
+    if [ ! -e "$zshprofile" ]; then
+        die "No zshfile (.zshrc) could be found" 1
     fi
 
     # Add our file to our bashprofile if it doesn't exist yet
