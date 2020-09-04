@@ -10,7 +10,7 @@ def setup():
 
 
 def test_from_json():
-    assert command_form.path == '/home/elementz/git/bashhub-client'
+    assert command_form.path == "/home/elementz/git/bashhub-client"
 
 
 def test_to_json():

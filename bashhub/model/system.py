@@ -5,8 +5,9 @@ from serializable import Serializable
 
 
 class System(Serializable):
-    def __init__(self, name, mac, id, created, updated, hostname,
-                 client_version):
+    def __init__(
+        self, name, mac, id, created, updated, hostname, client_version
+    ):
         self.name = name
         self.mac = mac
         self.id = id
@@ -28,11 +29,9 @@ class RegisterSystem(Serializable):
 
 
 class SystemPatch(Serializable):
-    def __init__(self,
-                 name=None,
-                 mac=None,
-                 hostname=None,
-                 client_version=None):
+    def __init__(
+        self, name=None, mac=None, hostname=None, client_version=None
+    ):
         self.name = name
         self.mac = mac
         self.hostname = hostname

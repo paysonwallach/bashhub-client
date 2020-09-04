@@ -26,22 +26,24 @@ from view.status import *
 def print_version(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
-    click.echo('Bashhub %s' % __version__)
+    click.echo("Bashhub %s" % __version__)
     ctx.exit()
 
 
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
-@click.option('-V',
-              '--version',
-              default=False,
-              is_flag=True,
-              callback=print_version,
-              help='Display version',
-              expose_value=False,
-              is_eager=True)
+@click.option(
+    "-V",
+    "--version",
+    default=False,
+    is_flag=True,
+    callback=print_version,
+    help="Display version",
+    expose_value=False,
+    is_eager=True,
+)
 def bashhub():
     """Bashhub command line client"""
     pass
@@ -50,47 +52,51 @@ def bashhub():
 @bashhub.command()
 def version():
     """Display version"""
-    click.echo('Bashhub %s' % __version__)
+    click.echo("Bashhub %s" % __version__)
 
 
 @bashhub.command()
-@click.option("-g",
-              "--global",
-              "is_global",
-              default=False,
-              is_flag=True,
-              help="Turn off saving commands for all sessions.")
+@click.option(
+    "-g",
+    "--global",
+    "is_global",
+    default=False,
+    is_flag=True,
+    help="Turn off saving commands for all sessions.",
+)
 def off(is_global):
     """Turn off saving commands to Bashhub. Applies for this current session."""
     if is_global:
-        write_to_config_file('save_commands', 'False')
+        write_to_config_file("save_commands", "False")
     else:
-        f = io.open(BH_HOME + '/script.bh', 'w+', encoding='utf-8')
+        f = io.open(BH_HOME + "/script.bh", "w+", encoding="utf-8")
         print(unicode("export BH_SAVE_COMMANDS='False'"), file=f)
 
 
 @bashhub.command()
-@click.option('-l',
-              "--local",
-              help="Turn on saving commands for only this session.",
-              is_flag=True)
+@click.option(
+    "-l",
+    "--local",
+    help="Turn on saving commands for only this session.",
+    is_flag=True,
+)
 def on(local):
     """Turn on saving commands to Bashhub. Applies globally."""
-    f = io.open(BH_HOME + '/script.bh', 'w+', encoding='utf-8')
+    f = io.open(BH_HOME + "/script.bh", "w+", encoding="utf-8")
 
     if local:
         print(unicode("export BH_SAVE_COMMANDS='True'"), file=f)
     else:
         print(unicode("unset BH_SAVE_COMMANDS"), file=f)
-        write_to_config_file('save_commands', 'True')
+        write_to_config_file("save_commands", "True")
 
 
 @bashhub.command()
-@click.argument('command', type=str)
-@click.argument('path', type=click.Path(exists=True))
-@click.argument('pid', type=long)
-@click.argument('process_start_time', type=long)
-@click.argument('exit_status', type=int)
+@click.argument("command", type=str)
+@click.argument("path", type=click.Path(exists=True))
+@click.argument("pid", type=long)
+@click.argument("process_start_time", type=long)
+@click.argument("exit_status", type=int)
 def save(command, path, pid, process_start_time, exit_status):
     """Save a command to Bashhub"""
     pid_start_time = unix_time_to_epoc_millis(process_start_time)
@@ -140,60 +146,66 @@ def help(ctx):
     """Show this message and exit"""
     click.echo(ctx.parent.get_help())
 
+
 # Dynamic help text containing the BH_FILTER variable.
-filtered_text = "BH_FILTER={0}".format(
-    BH_FILTER) if BH_FILTER else "BH_FILTER \
+filtered_text = (
+    "BH_FILTER={0}".format(BH_FILTER)
+    if BH_FILTER
+    else "BH_FILTER \
 is unset."
+)
 
 filter_help_text = """Check if a command is filtered from bashhub. Filtering
 is configured via a regex exported as BH_FILTER.
 \n
-{0}""".format(filtered_text)
+{0}""".format(
+    filtered_text
+)
 
 
 @bashhub.command(help=filter_help_text)
-@click.argument('command', type=str)
-@click.option('-r',
-              '--regex',
-              default=BH_FILTER,
-              help='Regex to filter against')
+@click.argument("command", type=str)
+@click.option(
+    "-r", "--regex", default=BH_FILTER, help="Regex to filter against"
+)
 def filter(command, regex):
 
     # Check if the regex we receive is valid
     if not bashhub_globals.is_valid_regex(regex):
-        click.secho("Regex {0} is invalid".format(regex), fg='red')
+        click.secho("Regex {0} is invalid".format(regex), fg="red")
         return
 
     v = re.findall(regex, command)
     click.echo(filtered_text)
     if v and regex:
         matched = [str(s) for s in set(v)]
-        output = click.style("{0} \nIs Filtered. Matched ".format(command),
-                             fg='yellow') + click.style(
-                                 str(matched), fg='red')
+        output = click.style(
+            "{0} \nIs Filtered. Matched ".format(command), fg="yellow"
+        ) + click.style(str(matched), fg="red")
         click.echo(output)
     else:
         click.echo("{0} \nIs Unfiltered".format(command))
 
 
 @bashhub.command()
-@click.argument('version', type=str, default='')
+@click.argument("version", type=str, default="")
 def update(version):
     """Update your Bashhub installation"""
 
-    if version != '':
+    if version != "":
         github = "https://github.com/rcaloras/bashhub-client/archive/{0}.tar.gz".format(
-            version)
+            version
+        )
         response = requests.get(github)
         if response.status_code is not 200:
             click.echo("Invalid version number {0}".format(version))
             sys.exit(1)
 
-    query_param = '?version={0}'.format(version) if version else ''
-    url = 'https://bashhub.com/setup' + query_param
+    query_param = "?version={0}".format(version) if version else ""
+    url = "https://bashhub.com/setup" + query_param
     response = requests.get(url, stream=True)
-    filename = 'update-bashhub.sh'
-    with open(filename, 'wb') as out_file:
+    filename = "update-bashhub.sh"
+    with open(filename, "wb") as out_file:
         shutil.copyfileobj(response.raw, out_file)
 
     shell_command = "bash -e {0} {1}".format(filename, version)
@@ -216,7 +228,7 @@ def update_system_info():
 
 
 @util.command()
-@click.argument('date_string', type=str)
+@click.argument("date_string", type=str)
 def parsedate(date_string):
     """date string to seconds since the unix epoch"""
     try:

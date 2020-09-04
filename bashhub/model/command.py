@@ -8,16 +8,18 @@ from serializable import Serializable
 
 
 class Command(Serializable):
-    def __init__(self,
-                 command,
-                 path,
-                 uuid,
-                 username,
-                 system_name,
-                 session_id,
-                 created,
-                 id,
-                 exit_status=None):
+    def __init__(
+        self,
+        command,
+        path,
+        uuid,
+        username,
+        system_name,
+        session_id,
+        created,
+        id,
+        exit_status=None,
+    ):
         self.command = command
         self.path = path
         self.uuid = uuid

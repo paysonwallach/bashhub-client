@@ -12,4 +12,4 @@ class MinCommand(Serializable):
         self.uuid = uuid
 
     def __str__(self):
-        return self.command.encode('utf8')
+        return self.command.encode("utf8")

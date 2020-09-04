@@ -19,8 +19,9 @@ class Serializable(object):
     def convert_json(cls, d, convert):
         new_d = {}
         for k, v in d.iteritems():
-            new_d[convert(k)] = cls.convert_json(v, convert) if isinstance(
-                v, dict) else v
+            new_d[convert(k)] = (
+                cls.convert_json(v, convert) if isinstance(v, dict) else v
+            )
         return new_d
 
     @classmethod
@@ -30,8 +31,8 @@ class Serializable(object):
 
         # Add back our python classname so jsonpickle
         # knows what class to deserialize it as
-        class_name = cls.__module__ + '.' + cls.__name__
-        temp['py/object'] = class_name
+        class_name = cls.__module__ + "." + cls.__name__
+        temp["py/object"] = class_name
 
         pickle = json.dumps(temp)
         return jsonpickle.decode(pickle)
@@ -39,7 +40,7 @@ class Serializable(object):
     @classmethod
     def from_JSON_list(cls, response):
 
-        #response = json.load(response)
+        # response = json.load(response)
 
         # Use list comprehension to map every json object
         # back to its object with from_JSON

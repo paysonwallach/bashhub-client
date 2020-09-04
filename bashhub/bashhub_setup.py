@@ -44,13 +44,14 @@ def query_yes_no(question, default="yes"):
     while True:
         sys.stdout.write(question + prompt)
         choice = raw_input().lower()
-        if default is not None and choice == '':
+        if default is not None and choice == "":
             return valid[default]
         elif choice in valid:
             return valid[choice]
         else:
-            sys.stdout.write("Please respond with 'yes' or 'no' "
-                             "(or 'y' or 'n').\n")
+            sys.stdout.write(
+                "Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n"
+            )
 
 
 def get_new_user_information():
@@ -86,7 +87,10 @@ def get_user_information_and_login(username=None, password=None, attempts=0):
         result = (username, password, access_token)
     else:
         result = get_user_information_and_login(attempts=attempts + 1) or (
-            None, None, None)
+            None,
+            None,
+            None,
+        )
 
     return result
 
@@ -107,13 +111,15 @@ def handle_system_information(username, password):
     # Register a new System if this one isn't recognized
     if system is None:
         hostname = socket.gethostname()
-        name_input = raw_input("What do you want to call this system? " +
-                               "For example Home, File Server, ect. [%s]: " %
-                               hostname)
+        name_input = raw_input(
+            "What do you want to call this system? "
+            + "For example Home, File Server, ect. [%s]: " % hostname
+        )
 
         name = name_input or hostname
-        system_name = rest_client.register_system(RegisterSystem(
-            name, mac, hostname, __version__))
+        system_name = rest_client.register_system(
+            RegisterSystem(name, mac, hostname, __version__)
+        )
         if system_name:
             print("Registered a new system " + name)
         else:
@@ -129,8 +135,11 @@ def handle_system_information(username, password):
     # If this system is already registered
     if system is not None:
         system_name = system.name
-        print("Welcome back! Looks like this box is already registered as " +
-              system.name + ".")
+        print(
+            "Welcome back! Looks like this box is already registered as "
+            + system.name
+            + "."
+        )
 
     return (access_token, system_name)
 
@@ -162,40 +171,52 @@ def main():
             register_user = get_new_user_information()
             register_result = rest_client.register_user(register_user)
             if register_result:
-                print("Registered new user {0}\n".format(
-                    register_user.username))
+                print(
+                    "Registered new user {0}\n".format(register_user.username)
+                )
                 # Set our credentials to login later
                 username = register_user.username
                 password = register_user.password
             else:
                 print("Sorry, registering a new user failed.")
-                print("You can rerun setup using 'bashhub setup' in a new "
-                      "terminal window.\n")
+                print(
+                    "You can rerun setup using 'bashhub setup' in a new "
+                    "terminal window.\n"
+                )
                 sys.exit(0)
 
         (username, password, access_token) = get_user_information_and_login(
-            username, password)
+            username, password
+        )
         if access_token == None:
             print("\nSorry looks like logging in failed.")
-            print("If you forgot your password please reset it. "
-                  "https://bashhub.com/password-reset")
-            print("You can rerun setup using 'bashhub setup' in a new "
-                  "terminal window.\n")
+            print(
+                "If you forgot your password please reset it. "
+                "https://bashhub.com/password-reset"
+            )
+            print(
+                "You can rerun setup using 'bashhub setup' in a new "
+                "terminal window.\n"
+            )
             sys.exit(0)
 
         # write out our user scoped access token
-        config_write_result = write_to_config_file("access_token",
-                                                   access_token)
+        config_write_result = write_to_config_file(
+            "access_token", access_token
+        )
         if not config_write_result:
             print("Writing your config file failed.")
             sys.exit(1)
 
-        (access_token, system_name) = handle_system_information(username,
-                                                                password)
+        (access_token, system_name) = handle_system_information(
+            username, password
+        )
 
         if access_token == None:
-            print("Sorry looks like getting your info failed.\
-                    Exiting...")
+            print(
+                "Sorry looks like getting your info failed.\
+                    Exiting..."
+            )
             sys.exit(0)
 
         # write out our system scoped token and the system name
@@ -206,7 +227,7 @@ def main():
         sys.exit(0)
 
     except Exception, err:
-        sys.stderr.write('Setup Error:\n%s\n' % str(err))
+        sys.stderr.write("Setup Error:\n%s\n" % str(err))
         traceback.print_exc()
         sys.exit(1)
     except KeyboardInterrupt:

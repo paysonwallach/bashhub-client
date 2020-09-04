@@ -14,10 +14,17 @@ Commands In Session: {6}
 Commands Today: {7}
 """
 
+
 def build_status_view(model):
     date = datetime.datetime.fromtimestamp(model.session_start_time / 1000.0)
     date_str = humanize.naturaltime(date)
     return status_view.format(
-        model.username, model.total_commands, model.total_sessions,
-        model.total_systems, model.session_name, date_str,
-        model.session_total_commands, model.total_commands_today)
+        model.username,
+        model.total_commands,
+        model.total_sessions,
+        model.total_systems,
+        model.session_name,
+        date_str,
+        model.session_total_commands,
+        model.total_commands_today,
+    )

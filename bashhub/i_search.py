@@ -13,24 +13,28 @@ class CommandList(npyscreen.MultiLineAction):
         self.command_handlers = {}
 
         # Any non highlited command handlers
-        self.add_handlers({
-            "q": self.exit_app,
-            ord("n"): self.h_cursor_line_down,
-            ord("p"): self.h_cursor_line_up,
-            curses.ascii.ESC: self.exit_app
-        })
+        self.add_handlers(
+            {
+                "q": self.exit_app,
+                ord("n"): self.h_cursor_line_down,
+                ord("p"): self.h_cursor_line_up,
+                curses.ascii.ESC: self.exit_app,
+            }
+        )
 
         # All handlers for when a command is highlighted
-        self.add_command_handlers({
-            ord("i"): self.go_to_command_details,
-            curses.ascii.SP: self.go_to_command_details,
-            curses.ascii.NL: self.select_command,
-            curses.ascii.CR: self.select_command,
-            curses.ascii.BS: self.delete_command,
-            curses.ascii.DEL: self.delete_command,
-            curses.KEY_BACKSPACE: self.delete_command,
-            curses.KEY_DC: self.delete_command
-        })
+        self.add_command_handlers(
+            {
+                ord("i"): self.go_to_command_details,
+                curses.ascii.SP: self.go_to_command_details,
+                curses.ascii.NL: self.select_command,
+                curses.ascii.CR: self.select_command,
+                curses.ascii.BS: self.delete_command,
+                curses.ascii.DEL: self.delete_command,
+                curses.KEY_BACKSPACE: self.delete_command,
+                curses.KEY_DC: self.delete_command,
+            }
+        )
 
         # Disable handling of ALL mouse events right now. Without this we're
         # unable to select text when inside of interactive search. This is
@@ -41,7 +45,8 @@ class CommandList(npyscreen.MultiLineAction):
 
     def delete_command(self, command):
         confirmed = npyscreen.notify_ok_cancel(
-            command.command.encode('utf8'), "Delete Command")
+            command.command.encode("utf8"), "Delete Command"
+        )
         if confirmed:
             result = rest_client.delete_command(command.uuid)
             if result:
@@ -57,8 +62,10 @@ class CommandList(npyscreen.MultiLineAction):
     def add_command_handlers(self, command_handlers):
         self.command_handlers = command_handlers
         # wire up to use npyscreens h_act_on_hightlited
-        event_handlers = dict((key, self.h_act_on_highlighted)
-                              for (key, value) in command_handlers.items())
+        event_handlers = dict(
+            (key, self.h_act_on_highlighted)
+            for (key, value) in command_handlers.items()
+        )
         self.add_handlers(event_handlers)
 
     def actionHighlighted(self, command, keypress):
@@ -67,8 +74,8 @@ class CommandList(npyscreen.MultiLineAction):
 
     def go_to_command_details(self, command):
         command_details = rest_client.get_command(command.uuid)
-        self.parent.parentApp.getForm('EDITRECORDFM').value = command_details
-        self.parent.parentApp.switchForm('EDITRECORDFM')
+        self.parent.parentApp.getForm("EDITRECORDFM").value = command_details
+        self.parent.parentApp.switchForm("EDITRECORDFM")
 
     def select_command(self, command):
         self.parent.parentApp.return_value = command
@@ -78,7 +85,7 @@ class CommandList(npyscreen.MultiLineAction):
 class CommandListDisplay(npyscreen.FormMutt):
     MAIN_WIDGET_CLASS = CommandList
 
-    #COMMAND_WIDGET_CLASS = None
+    # COMMAND_WIDGET_CLASS = None
 
     def beforeEditing(self):
         self.wStatus1.value = "Bashhub Commands "
@@ -92,22 +99,24 @@ class CommandListDisplay(npyscreen.FormMutt):
 class EditRecord(npyscreen.ActionForm):
     def __init__(self, *args, **keywords):
         super(EditRecord, self).__init__()
-        self.add_handlers({
-            "q": self.previous_form,
-            curses.ascii.ESC: self.exit_app
-        })
+        self.add_handlers(
+            {"q": self.previous_form, curses.ascii.ESC: self.exit_app}
+        )
 
     def create(self):
         self.value = None
         self.command = self.add(npyscreen.TitleFixedText, name="Command:")
         self.path = self.add(npyscreen.TitleFixedText, name="Path:")
         self.created = self.add(npyscreen.TitleFixedText, name="Created At:")
-        self.exit_status = self.add(npyscreen.TitleFixedText,
-                                    name="Exit Status:")
-        self.system_name = self.add(npyscreen.TitleFixedText,
-                                    name="System Name:")
-        self.session_id = self.add(npyscreen.TitleFixedText,
-                                   name="Session Id:")
+        self.exit_status = self.add(
+            npyscreen.TitleFixedText, name="Exit Status:"
+        )
+        self.system_name = self.add(
+            npyscreen.TitleFixedText, name="System Name:"
+        )
+        self.session_id = self.add(
+            npyscreen.TitleFixedText, name="Session Id:"
+        )
         self.uuid = self.add(npyscreen.TitleFixedText, name="UUID:")
 
     def exit_app(self, vl):
@@ -121,14 +130,18 @@ class EditRecord(npyscreen.ActionForm):
             record = self.value
             self.name = "Command Details"
             date_string = datetime.datetime.fromtimestamp(
-                record.created / 1000).strftime('%Y-%m-%d %H:%M:%S')
+                record.created / 1000
+            ).strftime("%Y-%m-%d %H:%M:%S")
             self.created.value = date_string
             self.command.value = record.command
             self.path.value = record.path
 
             # Handle old commands that don't have exit status
-            exit_status = "None" if record.exit_status is None else str(
-                record.exit_status)
+            exit_status = (
+                "None"
+                if record.exit_status is None
+                else str(record.exit_status)
+            )
             self.exit_status.value = exit_status
 
             self.system_name.value = record.system_name

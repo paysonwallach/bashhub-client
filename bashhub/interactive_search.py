@@ -17,8 +17,8 @@ class InteractiveSearch:
     ESC_KEY = 27
     ENTER_KEY = 10
 
-    PREFIX_SELECTED = '_X_'
-    PREFIX_DESELECTED = '___'
+    PREFIX_SELECTED = "_X_"
+    PREFIX_DESELECTED = "___"
 
     outputLines = []
     commands = []
@@ -50,13 +50,13 @@ class InteractiveSearch:
             self.displayScreen()
             # get user command
             c = self.screen.getch()
-            if c == curses.KEY_UP or c == ord('k'):
+            if c == curses.KEY_UP or c == ord("k"):
                 self.updown(self.UP)
-            elif c == curses.KEY_DOWN or c == ord('j'):
+            elif c == curses.KEY_DOWN or c == ord("j"):
                 self.updown(self.DOWN)
             elif c == self.ENTER_KEY:
                 return self.selectLine()
-            elif c == self.ESC_KEY or c == ord('q'):
+            elif c == self.ESC_KEY or c == ord("q"):
                 sys.exit()
 
     def markLine(self):
@@ -79,8 +79,8 @@ class InteractiveSearch:
         # now paint the rows
         top = self.topLineNum
         bottom = self.topLineNum + curses.LINES
-        for (index, line, ) in enumerate(self.outputLines[top:bottom]):
-            line = '%s' % (line, )
+        for (index, line,) in enumerate(self.outputLines[top:bottom]):
+            line = "%s" % (line,)
 
             # highlight current line
             if index != self.highlightLineNum:
@@ -94,21 +94,32 @@ class InteractiveSearch:
         nextLineNum = self.highlightLineNum + increment
 
         # paging
-        if increment == self.UP and self.highlightLineNum == 0 and self.topLineNum != 0:
+        if (
+            increment == self.UP
+            and self.highlightLineNum == 0
+            and self.topLineNum != 0
+        ):
             self.topLineNum += self.UP
             return
-        elif increment == self.DOWN and nextLineNum == curses.LINES and (
-                self.topLineNum + curses.LINES) != self.nOutputLines:
+        elif (
+            increment == self.DOWN
+            and nextLineNum == curses.LINES
+            and (self.topLineNum + curses.LINES) != self.nOutputLines
+        ):
             self.topLineNum += self.DOWN
             return
 
         # scroll highlight line
-        if increment == self.UP and (self.topLineNum != 0 or
-                                     self.highlightLineNum != 0):
+        if increment == self.UP and (
+            self.topLineNum != 0 or self.highlightLineNum != 0
+        ):
             self.highlightLineNum = nextLineNum
-        elif increment == self.DOWN and (
-                self.topLineNum + self.highlightLineNum + 1
-        ) != self.nOutputLines and self.highlightLineNum != curses.LINES:
+        elif (
+            increment == self.DOWN
+            and (self.topLineNum + self.highlightLineNum + 1)
+            != self.nOutputLines
+            and self.highlightLineNum != curses.LINES
+        ):
             self.highlightLineNum = nextLineNum
 
     def restoreScreen(self):

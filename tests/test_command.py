@@ -12,13 +12,13 @@ def setup():
 
 
 def test_from_json():
-    assert command.path == '/home/elementz/git/bashhub-client'
+    assert command.path == "/home/elementz/git/bashhub-client"
 
 
 def test_to_json():
-    command.username = 'some-user'
+    command.username = "some-user"
     to_json_command = Command.from_JSON(Command.to_JSON(command))
-    assert to_json_command.username == 'some-user'
+    assert to_json_command.username == "some-user"
 
 
 def test_no_exit_status():
